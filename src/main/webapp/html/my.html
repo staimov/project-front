@@ -196,12 +196,12 @@
                         '<td>' + item.level + '</td>' +
                         '<td>' + new Date(item.birthday).toLocaleDateString() + '</td>' +
                         '<td>' + item.banned + '</td>' +
-                        '<td>' +
-                        '<button id="edit_button_' + item.id + '" class="btn btn-info btn-sm mx-1" ' +
+                        '<td><div class="row justify-content-md-center">' +
+                        '<button id="edit_button_' + item.id + '" class="btn btn-info btn-sm mx-1 col-5" ' +
                         'onclick="editAccount(' + item.id + ')">Edit</button>' +
-                        '<button id="delete_button_' + item.id + '" class="btn btn-danger btn-sm mx-1" ' +
+                        '<button id="delete_button_' + item.id + '" class="btn btn-danger btn-sm mx-1 col-5" ' +
                         'onclick="deleteAccount(' + item.id + ')">Delete</button>' +
-                        '</td>'
+                        '</div></td>'
                     ).appendTo('#account_table');
                 });
             });
@@ -276,7 +276,7 @@
                 .attr('onclick', 'saveAccount(' + id + ')')
                 .html('Save');
 
-            let row = $(editButton).parent().parent();
+            let row = $(editButton).parent().parent().parent();
             let cells = row.children();
 
             makeTextCellEditable('name', cells[1], id);
@@ -362,7 +362,7 @@
 
         function makeTextCellEditable(idPrefix, cell, id) {
             cell.innerHTML = '<input id="' + idPrefix + '_input_'+ id +'" type="text" ' +
-                'value=' + cell.innerHTML +' class="form-control">';
+                'value=' + cell.innerHTML +' class="form-control form-control-sm">';
             return cell;
         }
 
