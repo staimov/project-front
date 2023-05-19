@@ -64,7 +64,7 @@
         <hr>
 
         <p class="h4 mb-4">Create New Account</p>
-        <form id="create-form" onsubmit="return false">
+        <form id="create-form" action="">
             <div class="row mb-2 align-items-center">
                 <label for="name_input" class="col-1 col-form-label">Name</label>
                 <div class="col-11">
@@ -353,14 +353,6 @@
                 data: json,
                 success: function () {
                     console.log("Account successfully created!");
-                    $('#name_input').val('');
-                    $('#title_input').val('');
-                    $('#race_select').val('HUMAN');
-                    $('#profession_select').val('WARRIOR');
-                    $('#level_input').val('');
-                    $('#birthday_input').val('');
-                    $('#banned_select').val('true');
-                    updateAll()
                 },
                 error: function(e) {
                     console.error('Create account failed!');
