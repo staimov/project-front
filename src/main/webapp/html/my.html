@@ -24,8 +24,8 @@
 
     <div class="container">
         <h1>RPG Admin Panel</h1>
-
-        <h4>Accounts</h4>
+        <hr>
+        <h4>Player Accounts</h4>
 
         <div class="row row-cols-auto mb-3 align-items-center">
             <label for="account_count_per_page_select" class="col">Items per page</label>
@@ -60,6 +60,92 @@
             <ul id="account_paging_buttons" class="pagination">
             </ul>
         </nav>
+
+        <hr>
+
+        <p class="h4 mb-4">Create New Account</p>
+        <div>
+            <div class="row mb-2 align-items-center">
+                <label for="name_input" class="col-1 col-form-label">Name</label>
+                <div class="col-11">
+                    <input id="name_input" name="name" type="text" required maxlength="12"
+                           class="form-control w-25" placeholder="Name">
+                </div>
+            </div>
+
+            <div class="row mb-2 align-items-center">
+                <label for="title_input" class="col-1 col-form-label">Title</label>
+                <div class="col-11">
+                    <input id="title_input" name="title" type="text" required maxlength="30"
+                           class="form-control w-25" placeholder="Title">
+                </div>
+            </div>
+
+            <div class="row mb-2 align-items-center">
+                <label for="race_select" class="col-1 col-form-label">Race</label>
+                <div class="col-11">
+                    <select id="race_select" name="race" class="form-select w-25" aria-label="Race">
+                        <option value="HUMAN">HUMAN</option>
+                        <option value="DWARF">DWARF</option>
+                        <option value="ELF">ELF</option>
+                        <option value="GIANT">GIANT</option>
+                        <option value="ORC">ORC</option>
+                        <option value="TROLL">TROLL</option>
+                        <option value="HOBBIT">HOBBIT</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-2 align-items-center">
+                <label for="profession_select" class="col-1 col-form-label">Profession</label>
+                <div class="col-11">
+                    <select id="profession_select" name="profession" class="form-select w-25" aria-label="Profession">
+                        <option value="WARRIOR">WARRIOR</option>
+                        <option value="ROGUE">ROGUE</option>
+                        <option value="SORCERER">SORCERER</option>
+                        <option value="CLERIC">CLERIC</option>
+                        <option value="PALADIN">PALADIN</option>
+                        <option value="NAZGUL">NAZGUL</option>
+                        <option value="WARLOCK">WARLOCK</option>
+                        <option value="DRUID">DRUID</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-2 align-items-center">
+                <label for="level_input" class="col-1 col-form-label">Level</label>
+                <div class="col-11">
+                    <input id="level_input" name="level" type="number" min="0" max="100"
+                           class="form-control w-25" placeholder="Level">
+                </div>
+            </div>
+
+            <div class="row mb-2 align-items-center">
+                <label for="birthday_input" class="col-1 col-form-label">Birthday</label>
+                <div class="col-11">
+                    <input id="birthday_input" name="birthday" type="date" min="2000-01-01" max="3000-12-31"
+                           class="form-control w-25">
+                </div>
+            </div>
+
+            <div class="row mb-2 align-items-center">
+                <label for="banned_select" class="col-1 col-form-label">Banned</label>
+                <div class="col-11">
+                    <select id="banned_select" name="banned" class="form-select w-25" aria-label="Banned">
+                        <option value="true">true</option>
+                        <option value="false">false</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-1"></div>
+                <div class="col-11">
+                    <button type="submit" onclick="createAccount()" class="btn btn-success w-25">Save</button>
+                </div>
+            </div>
+        </form>
+
     </div>
 
     <script>
@@ -167,7 +253,8 @@
                 type: 'DELETE',
                 async: false,
                 success: function () {
-                    showAccounts(getCurrentPageNumber());
+                    console.log("Account successfully deleted!");
+                    updateAll()
                 }
             });
         }
@@ -195,7 +282,6 @@
             makeTextCellEditable('title', cells[2], id);
             makeRaceSelectCellEditable(cells[3], id);
             makeProfessionSelectCellEditable(cells[4], id);
-
             makeBannedSelectCellEditable(cells[7], id);
         }
 
@@ -227,7 +313,53 @@
                 async: false,
                 data: json,
                 success: function () {
+                    console.log("Account successfully saved!");
                     showAccounts(getCurrentPageNumber());
+                }
+            });
+        }
+
+        function createAccount() {
+            let name = $('#name_input').val();
+            let title = $('#title_input').val();
+            let race = $('#race_select').val();
+            let profession = $('#profession_select').val();
+            let level = $('#level_input').val();
+            let birthday = $('#birthday_input').val();
+            let banned = $('#banned_select').val();
+
+            let url = '/rest/players';
+
+            let json = JSON.stringify({
+                'name': name,
+                'title': title,
+                'race': race,
+                'profession': profession,
+                'level': level,
+                'birthday': new Date(birthday).getTime(),
+                'banned': banned
+            });
+
+            console.log('Create url: ' + url);
+            console.log('Json: ' + json);
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json;charset=UTF-8',
+                async: false,
+                data: json,
+                success: function () {
+                    console.log("Account successfully created!");
+                    $('#name_input').val('');
+                    $('#title_input').val('');
+                    $('#race_select').val('HUMAN');
+                    $('#profession_select').val('WARRIOR');
+                    $('#level_input').val('');
+                    $('#birthday_input').val('');
+                    $('#banned_select').val('true');
+                    updateAll()
                 }
             });
         }
