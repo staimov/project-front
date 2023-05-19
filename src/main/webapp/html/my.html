@@ -64,7 +64,7 @@
         <hr>
 
         <p class="h4 mb-4">Create New Account</p>
-        <div>
+        <form id="create-form" onsubmit="return false">
             <div class="row mb-2 align-items-center">
                 <label for="name_input" class="col-1 col-form-label">Name</label>
                 <div class="col-11">
@@ -84,7 +84,8 @@
             <div class="row mb-2 align-items-center">
                 <label for="race_select" class="col-1 col-form-label">Race</label>
                 <div class="col-11">
-                    <select id="race_select" name="race" class="form-select w-25" aria-label="Race">
+                    <select id="race_select" name="race" class="form-select w-25"
+                            aria-label="Race" required>
                         <option value="HUMAN">HUMAN</option>
                         <option value="DWARF">DWARF</option>
                         <option value="ELF">ELF</option>
@@ -99,7 +100,8 @@
             <div class="row mb-2 align-items-center">
                 <label for="profession_select" class="col-1 col-form-label">Profession</label>
                 <div class="col-11">
-                    <select id="profession_select" name="profession" class="form-select w-25" aria-label="Profession">
+                    <select id="profession_select" name="profession" class="form-select w-25"
+                            aria-label="Profession" required>
                         <option value="WARRIOR">WARRIOR</option>
                         <option value="ROGUE">ROGUE</option>
                         <option value="SORCERER">SORCERER</option>
@@ -116,7 +118,7 @@
                 <label for="level_input" class="col-1 col-form-label">Level</label>
                 <div class="col-11">
                     <input id="level_input" name="level" type="number" min="0" max="100"
-                           class="form-control w-25" placeholder="Level">
+                           class="form-control w-25" placeholder="Level" required>
                 </div>
             </div>
 
@@ -124,7 +126,7 @@
                 <label for="birthday_input" class="col-1 col-form-label">Birthday</label>
                 <div class="col-11">
                     <input id="birthday_input" name="birthday" type="date" min="2000-01-01" max="3000-12-31"
-                           class="form-control w-25">
+                           class="form-control w-25" required>
                 </div>
             </div>
 
@@ -144,7 +146,7 @@
                     <button type="submit" onclick="createAccount()" class="btn btn-success w-25">Save</button>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 
     <script>
@@ -359,6 +361,9 @@
                     $('#birthday_input').val('');
                     $('#banned_select').val('true');
                     updateAll()
+                },
+                error: function(e) {
+                    console.error('Create account failed!');
                 }
             });
         }
