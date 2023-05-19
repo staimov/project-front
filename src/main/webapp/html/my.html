@@ -191,12 +191,12 @@
             let row = $(editButton).parent().parent();
             let cells = row.children();
 
-            let nameCell =  makeTextCellEditable('name', cells[1], id);
-            let titleCell = makeTextCellEditable('title', cells[2], id);
-            let raceCell = makeRaceSelectCellEditable(cells[3], id);
-            let professionCell = makeProfessionSelectCellEditable(cells[4], id);
+            makeTextCellEditable('name', cells[1], id);
+            makeTextCellEditable('title', cells[2], id);
+            makeRaceSelectCellEditable(cells[3], id);
+            makeProfessionSelectCellEditable(cells[4], id);
 
-            let bannedCell = makeBannedSelectCellEditable(cells[7], id);
+            makeBannedSelectCellEditable(cells[7], id);
         }
 
         function saveAccount(id) {
