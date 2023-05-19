@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src=https://code.jquery.com/jquery-3.6.0.min.js></script>
-    <link href="/css/my.css" rel="stylesheet">
 
     <!--Bootstrap CSS-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
@@ -12,7 +11,9 @@
           integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
           crossorigin="anonymous">
 
-    <title>RPG</title>
+    <link href="/css/my.css" rel="stylesheet">
+
+    <title>RPG Admin Panel</title>
 </head>
 <body onload="updateAll()">
 
@@ -21,44 +22,45 @@
             integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
             crossorigin="anonymous"></script>
 
-    <h1>RPG admin panel</h1>
+    <div class="container">
+        <h1>RPG Admin Panel</h1>
 
-    <h4>Accounts</h4>
+        <h4>Accounts</h4>
 
-
-    <div class="row row-cols-auto mb-3 align-items-center">
-        <label for="account_count_per_page_select" class="col">Items per page</label>
-        <div class="col">
-            <select id="account_count_per_page_select" onchange="updateAll()"
-                    class="form-select" aria-label="Default select example">
-                <option selected>3</option>
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-            </select>
+        <div class="row row-cols-auto mb-3 align-items-center">
+            <label for="account_count_per_page_select" class="col">Items per page</label>
+            <div class="col">
+                <select id="account_count_per_page_select" onchange="updateAll()"
+                        class="form-select" aria-label="Default select example">
+                    <option selected>3</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                </select>
+            </div>
         </div>
+
+        <div>
+            <table id="account_table" class="table table-bordered border-primary table-striped">
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Title</th>
+                    <th>Race</th>
+                    <th>Profession</th>
+                    <th>Level</th>
+                    <th>Birthday</th>
+                    <th>Banned</th>
+                    <th></th>
+                </tr>
+            </table>
+        </div>
+
+        <nav>
+            <ul id="account_paging_buttons" class="pagination">
+            </ul>
+        </nav>
     </div>
-
-
-    <div>
-        <table id="account_table" class="table table-bordered border-primary">
-            <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Title</th>
-                <th>Race</th>
-                <th>Profession</th>
-                <th>Level</th>
-                <th>Birthday</th>
-                <th>Banned</th>
-            </tr>
-        </table>
-    </div>
-
-    <nav>
-        <ul id="account_paging_buttons" class="pagination">
-        </ul>
-    </nav>
 
     <script>
         let countTotal;
@@ -106,7 +108,13 @@
                         '<td>' + item.profession + '</td>' +
                         '<td>' + item.level + '</td>' +
                         '<td>' + new Date(item.birthday).toLocaleDateString() + '</td>' +
-                        '<td>' + item.banned + '</td>'
+                        '<td>' + item.banned + '</td>' +
+                        '<td>' +
+                        '<button id="edit_button_' + item.id + '" class="btn btn-info btn-sm mx-1"' +
+                        'onclick="editAccount(' + item.id + ')">Edit</button>' +
+                        '<button id="delete_button_' + item.id + '" class="btn btn-danger btn-sm mx-1"' +
+                        'onclick="deleteAccount(' + item.id + ')">Delete</button>' +
+                        '</td>'
                     ).appendTo('#account_table');
                 });
             });
@@ -128,12 +136,156 @@
                 e.preventDefault();
                 $('a.page-link.active').removeClass('active');
                 $(this).addClass('active');
-                let buttonIndex = parseInt($(this).text());
-                if (buttonIndex == null) {
-                    buttonIndex = 1;
-                }
-                showAccounts(buttonIndex - 1);
+                showAccounts(getCurrentPageNumber());
             });
+        }
+
+        function getCurrentPageNumber() {
+            let buttonIndex = parseInt($('a.page-link.active').text());
+            if (buttonIndex == null) {
+                buttonIndex = 1;
+            }
+            console.log('Current page number: ' + (buttonIndex - 1));
+            return buttonIndex - 1;
+        }
+
+        function deleteAccount(id) {
+            if (id == null) {
+                console.error("id is null");
+                return;
+            }
+
+            if (!(confirm('Are you sure you want to delete the account (id = ' + id + ')?')))
+                return;
+
+            let url = '/rest/players/' + id;
+
+            console.log('Delete url: ' + url);
+
+            $.ajax({
+                url: url,
+                type: 'DELETE',
+                async: false,
+                success: function (result) {
+                    showAccounts(getCurrentPageNumber());
+                }
+            });
+        }
+
+        function editAccount(id) {
+            if (id == null) {
+                console.error("id is null");
+                return;
+            }
+
+            let editButton = '#edit_button_' + id;
+            let deleteButton = '#delete_button_' + id;
+
+            $(deleteButton).remove();
+            $(editButton)
+                .removeClass('btn-info')
+                .addClass('btn-success')
+                .attr('onclick', 'saveAccount(' + id + ')')
+                .html('Save');
+
+            let row = $(editButton).parent().parent();
+            let cells = row.children();
+
+            let nameCell =  makeTextCellEditable('name', cells[1], id);
+            let titleCell = makeTextCellEditable('title', cells[2], id);
+            let raceCell = makeRaceSelectCellEditable(cells[3], id);
+            let professionCell = makeProfessionSelectCellEditable(cells[4], id);
+
+            let bannedCell = makeBannedSelectCellEditable(cells[7], id);
+        }
+
+        function saveAccount(id) {
+            let name = $('#name_input_' + id).val();
+            let title = $('#title_input_' + id).val();
+            let race = $('#race_select_' + id).val();
+            let profession = $('#profession_select_' + id).val();
+            let banned = $('#banned_select_' + id).val();
+
+            let url = '/rest/players/' + id;
+
+            let json = JSON.stringify({
+                'name': name,
+                'title': title,
+                'race': race,
+                'profession': profession,
+                'banned': banned
+            });
+
+            console.log('Save url: ' + url);
+            console.log('Json: ' + json);
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json;charset=UTF-8',
+                async: false,
+                data: json,
+                success: function (result) {
+                    showAccounts(getCurrentPageNumber());
+                }
+            });
+        }
+
+        function makeTextCellEditable(idPrefix, cell, id) {
+            cell.innerHTML = '<input id="' + idPrefix + '_input_'+ id +'" type="text" ' +
+                'value=' + cell.innerHTML +' class="form-control">';
+            return cell;
+        }
+
+        function makeRaceSelectCellEditable(cell, id) {
+            let elementId = 'race_select_'+ id;
+            let currentValue = cell.innerHTML;
+            let html = '<label for="race"/>'
+                + '<select id="'+ elementId +'" name="race">'
+                + '<option value="HUMAN">HUMAN</option>'
+                + '<option value="DWARF">DWARF</option>'
+                + '<option value="ELF">ELF</option>'
+                + '<option value="GIANT">GIANT</option>'
+                + '<option value="ORC">ORC</option>'
+                + '<option value="TROLL">TROLL</option>'
+                + '<option value="HOBBIT">HOBBIT</option>'
+                + '</select>';
+            cell.innerHTML = html;
+            $('#' + elementId).val(currentValue).change();
+            return cell;
+        }
+
+        function makeProfessionSelectCellEditable(cell, id) {
+            let elementId = 'profession_select_'+ id;
+            let currentValue = cell.innerHTML;
+            let html = '<label for="profession"/>'
+                + '<select id="'+ elementId +'" name="profession">'
+                + '<option value="WARRIOR">WARRIOR</option>'
+                + '<option value="ROGUE">ROGUE</option>'
+                + '<option value="SORCERER">SORCERER</option>'
+                + '<option value="CLERIC">CLERIC</option>'
+                + '<option value="PALADIN">PALADIN</option>'
+                + '<option value="NAZGUL">NAZGUL</option>'
+                + '<option value="WARLOCK">WARLOCK</option>'
+                + '<option value="DRUID">DRUID</option>'
+                + '</select>';
+            cell.innerHTML = html;
+            $('#' + elementId).val(currentValue).change();
+            return cell;
+        }
+
+        function makeBannedSelectCellEditable(cell, id) {
+            let elementId = 'banned_select_'+ id;
+            let currentValue = cell.innerHTML;
+            let html = '<label for="banned"/>'
+                + '<select id="'+ elementId +'" name="banned">'
+                + '<option value="true">true</option>'
+                + '<option value="false">false</option>'
+                + '</select>';
+            cell.innerHTML = html;
+            $('#' + elementId).val(currentValue).change();
+            return cell;
         }
 
         function getAccountCount() {
