@@ -110,9 +110,9 @@
                         '<td>' + new Date(item.birthday).toLocaleDateString() + '</td>' +
                         '<td>' + item.banned + '</td>' +
                         '<td>' +
-                        '<button id="edit_button_' + item.id + '" class="btn btn-info btn-sm mx-1"' +
+                        '<button id="edit_button_' + item.id + '" class="btn btn-info btn-sm mx-1" ' +
                         'onclick="editAccount(' + item.id + ')">Edit</button>' +
-                        '<button id="delete_button_' + item.id + '" class="btn btn-danger btn-sm mx-1"' +
+                        '<button id="delete_button_' + item.id + '" class="btn btn-danger btn-sm mx-1" ' +
                         'onclick="deleteAccount(' + item.id + ')">Delete</button>' +
                         '</td>'
                     ).appendTo('#account_table');
@@ -124,7 +124,7 @@
             $('li.page-item').remove()
             for (let i = 0; i < countPages; i++) {
                 let buttonTag;
-                if (i == 0) {
+                if (i === 0) {
                     buttonTag = '<li class="page-item"><a class="page-link active" href="#">' + (i + 1) + '</a></li>';
                 } else {
                     buttonTag = '<li class="page-item"><a class="page-link" href="#">' + (i + 1) + '</a></li>';
@@ -166,7 +166,7 @@
                 url: url,
                 type: 'DELETE',
                 async: false,
-                success: function (result) {
+                success: function () {
                     showAccounts(getCurrentPageNumber());
                 }
             });
@@ -226,7 +226,7 @@
                 contentType: 'application/json;charset=UTF-8',
                 async: false,
                 data: json,
-                success: function (result) {
+                success: function () {
                     showAccounts(getCurrentPageNumber());
                 }
             });
@@ -241,7 +241,7 @@
         function makeRaceSelectCellEditable(cell, id) {
             let elementId = 'race_select_'+ id;
             let currentValue = cell.innerHTML;
-            let html = '<label for="race"/>'
+            cell.innerHTML = '<label for="race"/>'
                 + '<select id="'+ elementId +'" name="race">'
                 + '<option value="HUMAN">HUMAN</option>'
                 + '<option value="DWARF">DWARF</option>'
@@ -251,7 +251,6 @@
                 + '<option value="TROLL">TROLL</option>'
                 + '<option value="HOBBIT">HOBBIT</option>'
                 + '</select>';
-            cell.innerHTML = html;
             $('#' + elementId).val(currentValue).change();
             return cell;
         }
@@ -259,7 +258,7 @@
         function makeProfessionSelectCellEditable(cell, id) {
             let elementId = 'profession_select_'+ id;
             let currentValue = cell.innerHTML;
-            let html = '<label for="profession"/>'
+            cell.innerHTML = '<label for="profession"/>'
                 + '<select id="'+ elementId +'" name="profession">'
                 + '<option value="WARRIOR">WARRIOR</option>'
                 + '<option value="ROGUE">ROGUE</option>'
@@ -270,7 +269,6 @@
                 + '<option value="WARLOCK">WARLOCK</option>'
                 + '<option value="DRUID">DRUID</option>'
                 + '</select>';
-            cell.innerHTML = html;
             $('#' + elementId).val(currentValue).change();
             return cell;
         }
@@ -278,12 +276,11 @@
         function makeBannedSelectCellEditable(cell, id) {
             let elementId = 'banned_select_'+ id;
             let currentValue = cell.innerHTML;
-            let html = '<label for="banned"/>'
+            cell.innerHTML = '<label for="banned"/>'
                 + '<select id="'+ elementId +'" name="banned">'
                 + '<option value="true">true</option>'
                 + '<option value="false">false</option>'
                 + '</select>';
-            cell.innerHTML = html;
             $('#' + elementId).val(currentValue).change();
             return cell;
         }
