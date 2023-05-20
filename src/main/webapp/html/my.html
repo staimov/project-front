@@ -13,6 +13,14 @@
 
     <link href="/css/my.css" rel="stylesheet">
 
+<!--    <link rel="icon" href="/resources/favicon.ico" type="image/x-icon">-->
+
+<!--    <link rel="shortcut icon" href="/resources/favicon.ico" type="image/x-icon">-->
+
+        <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+
+        <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+
     <title>RPG Admin Panel</title>
 </head>
 <body onload="updateAll()">
@@ -167,7 +175,7 @@
             if (countPerPage == null) {
                 countPerPage = 3;
             }
-            console.log('countPerPage:" ' + countPerPage);
+            console.log('countPerPage: ' + countPerPage);
             countPages = Math.ceil(countTotal / countPerPage);
             console.log('countPages: ' + countPages);
         }
