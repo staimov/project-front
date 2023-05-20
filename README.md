@@ -1,6 +1,7 @@
 # project-front
+#### RPG Admin Panel
 
-JavaRush front app learning
+JavaRush frontend learning:
 
 https://javarush.com/quests/lectures/jru.module3.lecture02
 
