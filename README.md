@@ -1,11 +1,11 @@
 # project-front
-#### RPG Admin Panel
+### RPG Admin Panel
 
 JavaRush frontend learning:
 
 https://javarush.com/quests/lectures/jru.module3.lecture02
 
-## Requirments
+## Requirements
 
 Tomcat 9 required.
 
