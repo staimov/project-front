@@ -11,6 +11,11 @@
           integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
           crossorigin="anonymous">
 
+    <!-- Icon library -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+          integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
+          crossorigin="anonymous"/>
+
     <link href="/css/my.css" rel="stylesheet">
 
 <!--    <link rel="icon" href="/resources/favicon.ico" type="image/x-icon">-->
@@ -151,7 +156,8 @@
             <div class="row mt-4">
                 <div class="col-1"></div>
                 <div class="col-11">
-                    <button type="submit" onclick="createAccount()" class="btn btn-success w-25">Save</button>
+                    <button type="submit" onclick="createAccount()" class="btn btn-success w-25">
+                        <i class="fa fa-save"></i> Save</button>
                 </div>
             </div>
         </form>
@@ -206,9 +212,9 @@
                         '<td>' + item.banned + '</td>' +
                         '<td><div class="row justify-content-md-center">' +
                         '<button id="edit_button_' + item.id + '" class="btn btn-info btn-sm mx-1 col-5" ' +
-                        'onclick="editAccount(' + item.id + ')">Edit</button>' +
+                        'onclick="editAccount(' + item.id + ')"><i class="fas fa-pencil-alt"></i> Edit</button>' +
                         '<button id="delete_button_' + item.id + '" class="btn btn-danger btn-sm mx-1 col-5" ' +
-                        'onclick="deleteAccount(' + item.id + ')">Delete</button>' +
+                        'onclick="deleteAccount(' + item.id + ')"><i class="fas fa-trash-alt"></i> Delete</button>' +
                         '</div></td>'
                     ).appendTo('#account_table');
                 });
@@ -282,7 +288,7 @@
                 .removeClass('btn-info')
                 .addClass('btn-success')
                 .attr('onclick', 'saveAccount(' + id + ')')
-                .html('Save');
+                .html('<i class="fas fa-save"></i> Save');
 
             let row = $(editButton).parent().parent().parent();
             let cells = row.children();
